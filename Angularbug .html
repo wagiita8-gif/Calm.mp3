@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular Bug</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: Arial, sans-serif;
+  background: #0a0e1a;
+  color: white;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+/* NAME SCREEN */
+
+.name-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #0a0e1a;
+}
+
+.name-content {
+  width: min(90%, 350px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+#name-button {
+  width: 100%;
+  padding: 15px;
+  background: #39d312;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.name-form {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.name-form input {
+  width: 100%;
+  padding: 14px;
+  background: #1c1f26;
+  color: white;
+  border: 2px solid #39d312;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  text-align: center;
+}
+
+.name-form input::placeholder {
+  color: #999;
+}
+
+.submit-name {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #39d312;
+  color: white;
+  cursor: pointer;
+}
+
+/* MAIN SCREEN */
+
+.display-board {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  background: #27282d;
+  position: relative;
+  padding-bottom: 90px;
+}
+
+.cancel {
+  position: fixed;
+  top: 18px;
+  left: 22px;
+  font-size: 22px;
+  z-index: 20;
+  cursor: pointer;
+}
+
+.heart {
+  position: fixed;
+  top: 15px;
+  right: 45px;
+  font-size: 29px;
+  color: #ff0d68;
+  z-index: 20;
+}
+
+.lives {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  font-size: 22px;
+  color: #ff0d68;
+  z-index: 20;
+}
+
+.comment-button {
+  position: fixed;
+  top: 17px;
+  right: 92px;
+  font-size: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  cursor: pointer;
+}
+
+.content {
+  width: min(100%, 800px);
+  margin: auto;
+  padding: 100px 5vw 20px;
+  color: white;
+  font-size: clamp(15px, 4vw, 17px);
+  line-height: 1.5;
+}
+
+.question-box {
+  width: min(100%, 800px);
+  min-height: 120px;
+  margin: auto;
+  padding: 20px 15px;
+  background: #111519;
+}
+
+.question {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-family: monospace;
+  font-size: clamp(15px, 4.5vw, 17px);
+  line-height: 2;
+}
+
+.question input {
+  width: 100px;
+  max-width: 28vw;
+  height: 34px;
+  padding: 2px 5px;
+  background: #1c1f26;
+  color: white;
+  border: 2px solid #39d312;
+  border-radius: 5px;
+  text-align: center;
+  font-family: monospace;
+  font-size: clamp(14px, 4vw, 17px);
+  outline: none;
+}
+
+.progress-track {
+  position: absolute;
+  top: 3%;
+  left: 5%;
+  width: 90%;
+  height: 14px;
+  background: #1c1f26;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.progress-fill {
+  width: 75%;
+  height: 100%;
+  background: #39d312;
+  border-radius: 20px;
+}
+
+.progress-thumb {
+  position: absolute;
+  top: 50%;
+  left: 65%;
+  width: 11px;
+  height: 11px;
+  background: #1c1f26;
+  border: 3px solid #39d312;
+  border-radius: 50%;
+  transform: translate(-80%, -50%);
+}
+
+.check-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px;
+  background: #1c1d21;
+  z-index: 40;
+}
+
+.check-button {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 6px;
+  background: #0799e6;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.check-button.disabled {
+  background: #777;
+  cursor: default;
+}
+
+/* COMMENTS */
+
+.comments-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #25262b;
+  display: none;
+  overflow-y: auto;
+  padding-bottom: 90px;
+  touch-action: pan-y;
+}
+
+.comments-screen.show {
+  display: block;
+}
+
+.comments-header {
+  position: sticky;
+  top: 0;
+  height: 100px;
+  background: #1c1d21;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-bottom: 1px solid #303239;
+}
+
+.header-info {
+  text-align: center;
+}
+
+.post-date {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.comment-count {
+  margin-top: 3px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.back-button,
+.star-button,
+.header-menu {
+  position: absolute;
+  top: 20px;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.back-button {
+  left: 18px;
+}
+
+.star-button {
+  right: 52px;
+}
+
+.header-menu {
+  right: 17px;
+}
+
+.sort {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20px;
+  color: #aaa;
+  background: #18191d;
+  font-size: 14px;
+  border-bottom: 1px solid #303239;
+}
+
+.comment {
+  position: relative;
+  padding: 12px 10px;
+  min-height: 105px;
+  background: #25262b;
+  border-bottom: 1px solid #303239;
+}
+
+.comment-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.Avatar,
+.avatar,
+.Avatar1,
+.Avatar2,
+.Avatar3,
+.Avatar4,
+.Avatar5,
+.Avatar6,
+.Avatar7,
+.Avatar8,
+.Avatar9{
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.Avatar,
+.avatar {
+  background: #7b1fa2;
+}
+
+.Avatar1 {
+  background: #b51f62;
+}
+.Avatar2 {
+  background: #783;
+}
+.Avatar3 {
+  background: #d50;
+}
+.Avatar4 {
+  background: green;
+}
+.Avatar5 {
+  background: yellow;
+}
+.Avatar6 {
+  background: red;
+}
+.Avatar7 {
+  background: hotpink;
+}
+.Avatar8 {
+  background: greenyellow;
+}
+.Avatar9 {
+  background: #2fffefff;
+}
+.comment-body {
+  flex: 1;
+  min-width: 0;
+  padding-right: 35px;
+}
+
+.comment-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: #ddd;
+}
+
+.comment-date {
+  position: absolute;
+  top: 13px;
+  right: 29px;
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.comment-text {
+  margin-top: 5px;
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.vote-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-left: 48px;
+  margin-top: 10px;
+  color: #888;
+  font-size: 14px;
+}
+
+.vote {
+  min-width: 30px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.vote.active {
+  color: #2196f3;
+  font-weight: bold;
+}
+
+.downvote.active {
+  color: #ef5575;
+  font-weight: bold;
+}
+
+.replies {
+  margin-left: auto;
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.comment-menu {
+  display: none;
+}
+
+hr {
+  display: none;
+}
+
+/* ADD COMMENT */
+
+.add-comment {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 50%;
+  background: #8bdc38;
+  color: #111;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 210;
+  box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}
+
+/* COMMENT FORM */
+
+.comment-form {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0,0,0,.75);
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.comment-form.show {
+  display: flex;
+}
+
+.form-box {
+  width: min(100%, 600px);
+  background: #1c1f26;
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+}
+
+.form-box h3 {
+  margin: 0 0 15px;
+}
+
+.form-box textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+  background: #0a0e1a;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.form-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.post-btn {
+  background: #39d312;
+  color: white;
+}
+
+.cancel-btn {
+  background: #333;
+  color: white;
+}
+
+/* RESULT */
+
+.result-screen,
+.success-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background: #27282d;
+  text-align: center;
+}
+
+.result-screen.show,
+.success-screen.show {
+  display: flex;
+}
+
+.result-title,
+.success-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.result-message {
+  margin-bottom: 25px;
+  color: #ddd;
+  font-size: 15px;
+}
+
+.try-again,
+.success-btn {
+  width: min(100%, 500px);
+  height: 52px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.try-again {
+  background: #ef5575;
+}
+
+.success-btn {
+  background: #39d312;
+}
+
+@media (max-width: 500px) {
+  .content {
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+
+  .question-box {
+    padding: 18px 10px;
+  }
+
+  .comment-name {
+    font-size: 14px;
+  }
+
+  .comment-date {
+    right: 25px;
+    font-size: 11px;
+  }
+
+  .vote-row {
+    margin-left: 46px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="name-screen" id="name-screen">
+  <div class="name-content">
+
+    <button id="name-button" onclick="showNameInput()">
+      👤 Kindly, your name is required
+    </button>
+
+    <div class="name-form" id="name-form">
+      <input
+        type="text"
+        id="name-input"
+        placeholder="Enter your name..."
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="words"
+        spellcheck="false"
+      >
+
+      <button class="submit-name" onclick="submitName()">
+        Submit
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="display-board" id="display-board">
+
+  <div class="cancel" onclick="showCancel()">X</div>
+
+  <span class="heart">♥</span>
+
+  <div class="lives">2</div>
+
+  <div class="comment-button" onclick="openComments()">
+    🗨️
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-fill"></div>
+    <div class="progress-thumb"></div>
+  </div>
+
+  <div class="content">
+    Fill in the blanks to bind the button to the "add()" method, so it is called when the button is clicked
+  </div>
+
+  <div class="question-box">
+    <div class="question">
+
+      <span>&lt;button</span>
+
+      <input
+        type="text"
+        id="answer-input"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="none"
+        spellcheck="false"
+      >
+
+      <span>="add()"&gt;</span>
+
+      <br>
+
+      <span>Add Item</span>
+
+      <br>
+
+      <span>&lt;/button&gt;</span>
+
+    </div>
+  </div>
+
+  <div class="check-container">
+    <button
+      id="check-button"
+      class="check-button disabled"
+      onclick="checkAnswer()"
+    >
+      CHECK
+    </button>
+  </div>
+
+</div>
+
+<div class="result-screen" id="wrong-screen">
+  <div class="result-title">
+    Give it Another Try
+  </div>
+
+  <div class="result-message">
+    Your answer isn't quite right. 🤔
+  </div>
+
+  <button class="try-again" onclick="tryAgain()">
+    TRY AGAIN
+  </button>
+</div>
+
+<div class="success-screen" id="success-screen">
+  <div class="success-title">
+    Correct! 🎉
+  </div>
+
+  <div class="result-message">
+    Nice work.
+  </div>
+
+  <button class="success-btn" onclick="closeSuccess()">
+    CONTINUE
+  </button>
+</div>
+
+<div class="comments-screen" id="comments-screen">
+
+  <div class="comments-header">
+
+    <div class="back-button" onclick="closeComments()">
+      ←
+    </div>
+
+    <div class="header-info">
+      <div class="post-date">
+        Aug 25⌄
+      </div>
+
+      <div class="comment-count" id="comment-count">
+        12 COMMENTS
+      </div>
+    </div>
+
+    <div class="star-button">
+      ☆
+    </div>
+
+    <div class="header-menu">
+      ⋮
+    </div>
+
+  </div>
+
+  <div class="sort">
+    Most Popular　⌄
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar">
+        A
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Arya
+        </span>
+
+        <span class="comment-date">
+          9/10/2023
+        </span>
+
+        <div class="comment-text">
+          (click)
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+26</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar1">
+        V
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Vladislav Dostov
+        </span>
+
+        <span class="comment-date">
+          10/31/2023
+        </span>
+
+        <div class="comment-text">
+          I'm wrote (onclick),,,Delphi in my heart abuse me to do this mistake two times in a row)
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+13</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar2">
+        M
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Monika Pierzchala
+        </span>
+
+        <span class="comment-date">
+          10/11/2023
+        </span>
+
+        <div class="comment-text">
+          method="invoke_function()"<br>
+          {{take value of variable}}<br>
+          [set_this_variable]="with_this_value"
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+8</span>
+      </span>
+
+      <span class="replies">
+        1 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar3">
+        AH
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Ahmad Harris
+        </span>
+
+        <span class="comment-date">
+          11/17/2023
+        </span>
+
+        <div class="comment-text">
+          button(click)
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+5</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar4">
+        E
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Edon Shala
+        </span>
+
+        <span class="comment-date">
+          10/20/2023
+        </span>
+
+        <div class="comment-text">
+          3 in a row 🔥🔥🔥
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+3</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar5">
+        S
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Opeyemi sheriff Yusuf
+        </span>
+
+        <span class="comment-date">
+          10/16/2023
+        </span>
+
+        <div class="comment-text">
+          (click)
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+3</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar6">
+        H
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Hernández Muñoz Victor Chabel
+        </span>
+
+        <span class="comment-date">
+          3/31/2024
+        </span>
+
+        <div class="comment-text">
+          "(click)"
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+1</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar7">
+        O
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Otuokwu Israel
+        </span>
+
+        <span class="comment-date">
+          9/11/2023
+        </span>
+
+        <div class="comment-text">
+          Feels Good. I am looking forward to Two way data binding.
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">+1</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar">
+        P
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Pirate piracy
+        </span>
+
+        <span class="comment-date">
+          8/21/2026
+        </span>
+
+        <div class="comment-text">
+          Mine is autospacing😭😭😭💔
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">0</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar8">
+        B
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          BRIGHT 🇳🇬
+        </span>
+
+        <span class="comment-date">
+          12/24/2025
+        </span>
+
+        <div class="comment-text">
+          Nothing is working for me<br>
+          Both<br>
+          (click)And (onclick)<br>
+          I think there's an error
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">0</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div class="comment existing">
+
+    <div class="comment-top">
+
+      <div class="Avatar9">
+        AG
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          Ahmad Gad
+        </span>
+
+        <span class="comment-date">
+          9/1/2025
+        </span>
+
+        <div class="comment-text">
+          (click)
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="vote-row">
+
+      <span
+        class="vote existing-vote"
+        onclick="existingUpvote(this)"
+      >
+        ^ <span class="vote-count">0</span>
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+
+    </div>
+
+  </div>
+
+  <div id="new-comments"></div>
+
+  <button
+    class="add-comment"
+    onclick="openCommentForm()"
+  >
+    +
+  </button>
+
+</div>
+
+<div class="comment-form" id="comment-form">
+
+  <div class="form-box">
+
+    <h3>
+      Comment as
+      <span id="posting-name"></span>
+    </h3>
+
+    <textarea
+      id="comment-input"
+      placeholder="Write your comment..."
+      spellcheck="true"
+    ></textarea>
+
+    <div class="form-buttons">
+
+      <button
+        class="cancel-btn"
+        onclick="closeCommentForm()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="post-btn"
+        onclick="postComment()"
+      >
+        Post
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+let userName = "";
+
+const answerInput = document.getElementById("answer-input");
+const checkButton = document.getElementById("check-button");
+const comments = document.getElementById("comments-screen");
+
+let startY = 0;
+
+function showNameInput() {
+  document.getElementById("name-button").style.display = "none";
+  document.getElementById("name-form").style.display = "flex";
+  document.getElementById("name-input").focus();
+}
+
+function submitName() {
+  const nameInput = document.getElementById("name-input");
+  const name = nameInput.value.trim();
+
+  if (name === "") {
+    nameInput.focus();
+    return;
+  }
+
+  userName = name;
+
+  document.getElementById("name-screen").style.display = "none";
+  document.getElementById("display-board").style.display = "block";
+}
+
+function checkAnswer() {
+  const answer = answerInput.value.trim();
+
+  if (answer === "") {
+    return;
+  }
+
+  if (answer === "(click)") {
+    document.getElementById("success-screen").classList.add("show");
+  } else {
+    document.getElementById("wrong-screen").classList.add("show");
+  }
+}
+
+function tryAgain() {
+  document.getElementById("wrong-screen").classList.remove("show");
+  answerInput.value = "";
+  checkButton.classList.add("disabled");
+  answerInput.focus();
+}
+
+function closeSuccess() {
+  document.getElementById("success-screen").classList.remove("show");
+}
+
+answerInput.addEventListener("input", function() {
+  let value = answerInput.value;
+
+  if (value === "(click)") {
+    answerInput.value = "( click)";
+  }
+
+  if (answerInput.value.trim() === "") {
+    checkButton.classList.add("disabled");
+  } else {
+    checkButton.classList.remove("disabled");
+  }
+});
+
+function openComments() {
+  comments.classList.add("show");
+}
+
+function closeComments() {
+  comments.classList.remove("show");
+}
+
+function existingUpvote(button) {
+  const count = button.querySelector(".vote-count");
+
+  if (button.classList.contains("active")) {
+    button.classList.remove("active");
+    count.textContent = Number(count.textContent) - 1;
+  } else {
+    button.classList.add("active");
+    count.textContent = Number(count.textContent) + 1;
+  }
+}
+
+function openCommentForm() {
+  document.getElementById("posting-name").textContent = userName;
+  document.getElementById("comment-form").classList.add("show");
+  document.getElementById("comment-input").focus();
+}
+
+function closeCommentForm() {
+  document.getElementById("comment-form").classList.remove("show");
+  document.getElementById("comment-input").value = "";
+}
+
+function postComment() {
+  const input = document.getElementById("comment-input");
+  const text = input.value.trim();
+
+  if (text === "") {
+    input.focus();
+    return;
+  }
+
+  const newComment = document.createElement("div");
+  newComment.className = "comment";
+
+  const firstLetter = userName.charAt(0).toUpperCase();
+
+  newComment.innerHTML = `
+    <div class="comment-top">
+      <div class="Avatar">
+        ${escapeHTML(firstLetter)}
+      </div>
+
+      <div class="comment-body">
+        <span class="comment-name">
+          ${escapeHTML(userName)}
+        </span>
+
+        <span class="comment-date">
+          ${new Date().toLocaleDateString()}
+        </span>
+
+        <div class="comment-text">
+          ${escapeHTML(text)}
+        </div>
+      </div>
+    </div>
+
+    <div class="vote-row">
+      <span class="vote upvote" onclick="newUpvote(this)">
+        ^ <span class="vote-count">0</span>
+      </span>
+
+      <span class="vote downvote" onclick="newDownvote(this)">
+        v
+      </span>
+
+      <span class="replies">
+        0 REPLIES　 REPLY
+      </span>
+    </div>
+  `;
+
+  document.getElementById("new-comments").appendChild(newComment);
+
+  const count = document.getElementById("comment-count");
+  const currentCount = parseInt(count.textContent);
+
+  count.textContent = (currentCount + 1) + " COMMENTS";
+
+  closeCommentForm();
+}
+
+function newUpvote(button) {
+  const row = button.parentElement;
+  const count = button.querySelector(".vote-count");
+  const downvote = row.querySelector(".downvote");
+
+  if (button.classList.contains("active")) {
+    button.classList.remove("active");
+    count.textContent = Number(count.textContent) - 1;
+  } else {
+    button.classList.add("active");
+
+    if (downvote.classList.contains("active")) {
+      downvote.classList.remove("active");
+    }
+
+    count.textContent = Number(count.textContent) + 1;
+  }
+}
+
+function newDownvote(button) {
+  const row = button.parentElement;
+  const upvote = row.querySelector(".upvote");
+  const count = upvote.querySelector(".vote-count");
+
+  if (button.classList.contains("active")) {
+    button.classList.remove("active");
+    count.textContent = Number(count.textContent) + 1;
+  } else {
+    button.classList.add("active");
+
+    if (upvote.classList.contains("active")) {
+      upvote.classList.remove("active");
+      count.textContent = Number(count.textContent) - 1;
+    }
+  }
+}
+
+function escapeHTML(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+comments.addEventListener("touchstart", function(event) {
+  startY = event.touches[0].clientY;
+});
+
+comments.addEventListener("touchend", function(event) {
+  const endY = event.changedTouches[0].clientY;
+
+  if (endY - startY > 80) {
+    closeComments();
+  }
+});
+
+function showCancel() {
+  document.getElementById("display-board").style.display = "none";
+  document.getElementById("name-screen").style.display = "flex";
+  document.getElementById("name-button").style.display = "block";
+  document.getElementById("name-form").style.display = "none";
+}
+</script>
+
+</body>
+</html>
