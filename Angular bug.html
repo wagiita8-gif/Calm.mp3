@@ -1,0 +1,2109 @@
+<!--Created by Pirate piracy-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0s">
+    <title>Angular Bug</title>
+    <style>
+       /* =================================
+              GENERAL
+          =================================*/
+      * {
+          box-sizing:border-box;
+      }
+      html,
+      body {
+        margin:0;
+        padding:0;
+        width:100%;
+        height:100%;
+        font-family: Arial,sans-serif;
+        background: #0a0e1a;
+        color: white;
+      
+      }
+      /*=========================
+          NAME SCREEN
+      ===========================*/
+      .name-screen{
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+           
+        align-items: center;
+        justify-content: center;
+        background:#0a0e1a;
+      }
+      .name-content {
+        width: 90%;
+
+        max-width: 350px;
+
+        display: flex;
+
+        flex-direction: column;
+        align-items: center;
+        gap:14px
+      }
+      #name-button {
+        padding: 15px 15px;
+        
+      
+        background: #39d312;
+        color: white;
+        
+        border: none;
+        border-radius: 12px;
+        
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .name-form {
+        position: fixed;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        gap:16px;
+      }
+      .name-form input {
+
+        width: 100%;
+        
+        padding: 14px;
+
+        background: #1c1f26;
+        color: white;
+        
+        border: 2px solid #39d312;
+        border-radius: 10px;
+
+        font-size: 16px;
+
+        outline: none;
+
+        text-align: center;
+        
+      }
+      .name-input placeholder {
+        color:#999;
+      }
+
+      .submit-name {
+
+        width: 100%;
+
+        padding: 13px;
+
+        border: none;
+        border-radius: 10px;
+
+        font-size: 12px;
+        font-weight: bold;
+
+        background:#39d312;
+        color: white;
+
+        cursor: pointer;
+
+        
+      }
+
+      /*=====================================
+          DISPLAY-BOARD
+        ===================================== */
+      .display-board {
+        display:none;
+
+        width: 100%;
+
+        min-height: 100vh;
+
+        background: #27282d;
+        
+        position: relative;
+
+        padding-bottom: 100px;
+      }
+
+
+      /*=====================
+         TOP BAR
+      ======================*/
+
+      /*X button*/
+      .cancel {
+        position: fixed;
+        top: 20px;
+        left: 25px;
+        font-size:20px;
+
+        z-index: 20;
+        
+        
+      }
+
+      /*heart*/
+      .heart {
+        position: fixed;
+        top: 18px;
+        right: 45px;
+        font-size:29px;
+        color: #ff0d68;
+
+        z-index: 20;
+     }
+      
+      /*Lives*/
+      .lives {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        font-size:25px;
+        color: #ff0d68;
+        z-index: 20;
+      }
+
+      /*============================
+      COMMENT SECTION
+      ===========================*/
+
+      /*==================
+      Button
+      ===================*/
+      .comment-button {
+        position: fixed;
+        top: 20px;
+        right: 100px;
+        font-size: 29px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+        
+        z-index: 20;
+      }
+  /* ================
+      Content area
+      ===============*/
+      .content {
+        
+        color: white;
+        font-size: 17px;
+        line-height: 1.5;
+        padding: 110px 30px 20px;
+        
+      }
+.question-box {
+
+  width: 100%;
+
+  min-height: 120px;
+
+  margin: 0;
+
+  padding: 20px 15px;
+
+  background: #111519;
+
+  border-radius: 0;
+}
+
+
+.question {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 4px;
+
+  font-family: monospace;
+
+  font-size: 17px;
+
+  line-height: 2;
+
+}
+
+
+.question input {
+
+  width: 100px;
+
+  height:34px;
+
+  padding: 2px 5px;
+
+  background: #111519;
+
+  color: white;
+
+  border: 2px solid #39d312;
+
+  border-radius: 5px;
+
+  text-align: center;
+
+  font-family: monospace;
+
+  font-size: 17px;
+
+  outline: none;
+
+  white-space: nowrap;
+
+  word-spacing: 0;
+
+  letter-spacing: 0;
+
+  text-transform: none;
+}
+
+    
+      
+    /* Progress bar */
+     .progress-track {
+        position: absolute;
+        top: 3%;
+        left: 4%;
+        width: 90%;
+        height: 14px;
+        background: #1c1f26;
+        border-radius: 10px;
+        margin: 20px 0 0 ;
+      }
+
+     .progress-fill {
+        width: 75%;
+        height: 100%;
+        background: #39d312;
+        border-radius: 20px;
+      }
+
+    .progress-thumb {
+        position: absolute;
+        top: 50%;
+        left: 65%;
+        width: 11px;
+        height: 11px;
+        background: #1c1f26;
+        border: 3px solid #39d312;
+        border-radius: 50%;
+        transform: translate(-80%, -50%);
+      }
+      .question input {
+        background:#1c1f26;
+        width:50px;
+      }
+      
+
+/* =====================================================
+   CHECK BUTTON
+===================================================== */
+
+.check-container {
+
+  position: fixed;
+
+  left: 0;
+  right: 0;
+
+  bottom: 0;
+
+  padding: 14px;
+
+  background: #1c1d21;
+
+  z-index: 40;
+}
+
+
+.check-button {
+
+  width: 100%;
+
+  height: 52px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: #0799e6;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+.check-button.disabled {
+
+  background: #777;
+
+  cursor: default;
+}
+
+/* =====================================================
+   COMMENTS SCREEN
+===================================================== */
+
+.comments-screen {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 200;
+
+  background: #25262b;
+
+  display: none;
+
+  overflow-y: auto;
+
+  padding-bottom: 100px;
+
+  touch-action: pan-y;
+}
+
+
+.comments-screen.show {
+  display: block;
+}
+
+
+/* =====================================================
+   COMMENTS HEADER
+===================================================== */
+
+.comments-header {
+
+  position: sticky;
+
+  top: 0;
+
+  height: 100px;
+
+  background: #25262b;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  z-index: 5;
+
+  border-bottom: 1px solid #303239;
+}
+
+
+.comments-header h2 {
+
+  margin: 0;
+
+  font-size: 15px;
+}
+
+
+.drag-bar {
+
+  position: absolute;
+
+  top: 9px;
+
+  width: 22px;
+  height: 4px;
+
+  background: #ddd;
+
+  border-radius: 5px;
+}
+
+
+/* =====================================================
+   SORT
+===================================================== */
+
+.sort {
+
+  height: 45px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  padding-right: 20px;
+
+  color: #aaa;
+
+  background: #18191d;
+
+  font-size: 15px;
+}
+      /* =====================================================
+   COMMENT
+===================================================== */
+
+.comment {
+
+  padding: 15px 10px;
+
+  min-height: 105px;
+
+  border-bottom: 1px solid #303239;
+
+  background: #25262b;
+}
+
+
+.comment-top {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 11px;
+}
+
+
+.Avatar {
+
+  width: 38px;
+
+  height: 38px;
+
+  min-width: 38px;
+
+  border-radius: 50%;
+
+  background: #7b1fa2;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-weight: bold;
+
+  font-size: 17px;
+}
+.Avatar1 {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: #7b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+comment-body {
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.comment-name {
+
+  font-weight: bold;
+
+  color: #ddd;
+}
+
+
+.comment-date {
+
+  float: right;
+
+  color: #aaa;
+
+  font-size: 12px;
+}
+
+
+.comment-text {
+
+  clear: both;
+
+  color: #ddd;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  margin-top: 6px;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =====================================================
+   VOTING
+===================================================== */
+
+.vote-row {
+
+  margin-left: 48px;
+
+  margin-top: 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  color: #888;
+
+  font-size: 14px;
+}
+
+
+.vote {
+
+  cursor: pointer;
+
+  user-select: none;
+
+  min-width: 30px;
+}
+
+
+.vote.active {
+
+  color: #2196f3;
+
+  font-weight: bold;
+}
+
+
+.downvote.active {
+
+  color: #ef5575;
+
+  font-weight: bold;
+}
+
+
+.replies {
+
+  margin-left: auto;
+
+  color: #aaa;
+
+  font-size: 12px;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   PLUS BUTTON
+===================================================== */
+
+.add-comment {
+
+  position: fixed;
+
+  right: 20px;
+
+  bottom: 20px;
+
+  width: 55px;
+
+  height: 55px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: #8bdc38;
+
+  color: #111;
+
+  font-size: 30px;
+
+  cursor: pointer;
+
+  z-index: 210;
+
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.5);
+}
+
+/* =====================================================
+   COMMENT FORM
+===================================================== */
+
+.comment-form {
+
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 300;
+
+  background: rgba(0,0,0,.75);
+
+  align-items: flex-end;
+
+  justify-content: center;
+}
+
+
+.comment-form.show {
+  display: flex;
+}
+
+
+.form-box {
+
+  width: 100%;
+
+  background: #1c1f26;
+
+  padding: 20px;
+
+  border-radius: 20px 20px 0 0;
+}
+
+
+.form-box h3 {
+
+  margin-top: 0;
+
+  margin-bottom: 15px;
+}
+
+
+.form-box textarea {
+
+  width: 100%;
+
+  height: 100px;
+
+  resize: none;
+
+  background: #0a0e1a;
+
+  color: white;
+
+  border: 1px solid #444;
+
+  border-radius: 10px;
+
+  padding: 12px;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+
+.form-buttons {
+
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 12px;
+}
+
+
+.form-buttons button {
+
+  flex: 1;
+
+  padding: 12px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+.post-btn {
+
+  background: #39d312;
+
+  color: white;
+}
+
+
+.cancel-btn {
+
+  background: #333;
+
+  color: white;
+  }
+
+/* =====================================================
+   WRONG ANSWER SCREEN
+===================================================== */
+
+.result-screen {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 500;
+
+  display: none;
+
+  flex-direction: column;
+
+  background: #27282d;
+}
+
+
+.result-screen.show {
+  display: flex;
+}
+.result-title {
+
+  font-size: 20px;
+
+  font-weight: bold;
+
+  margin-bottom: 15px;
+}
+
+
+
+
+.result-message {
+
+  color: #ddd;
+
+  font-size: 15px;
+
+  margin-bottom: 25px;
+}
+
+
+.try-again {
+
+  width: 100%;
+
+  height: 52px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: #ef5575;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAME SCREEN
+===================================================== -->
+
+<div
+  class="name-screen"
+  id="name-screen">
+
+  <div class="name-content">
+
+    <button
+      id="name-button"
+      onclick="showNameInput()">
+
+      👤 Kindly, your name is required
+
+    </button>
+
+
+    <div
+      class="name-form"
+      id="name-form">
+
+      <input
+        type="text"
+        id="name-input"
+        placeholder="Enter your name..."
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="words"
+        spellcheck="false">
+
+          <button 
+            class="submit-name"
+            onclick="submitName()">
+            Submit
+            </button>
+         </div>
+
+      </div>
+   
+    </div>
+
+    <!--=======================================
+          Display Board
+      ========================================= -->
+    
+    <div class="display-board" 
+      id="display-board">
+
+    <!--Items at the top-->
+
+    <!--X-->
+
+    <div class="cancel" onclick="showCancel()">
+     X
+    </div>
+
+    <!--Heart and Lives-->
+    <span class="heart">♥</span>
+
+      
+    <div class="lives">2</div>
+
+      
+    <!--comment  section-->
+    <div class="comment-button" onclick="openComments()">
+      🗨️
+    </div>
+
+      
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+      <div class="progress-thumb"></div>
+    </div>
+
+
+      
+    <div class="content">
+      Fill in the blanks to bid the button to the "add()"method,so it is called when the button is clicked
+    </div>
+      
+    <div class="question-box">
+    <div class="question">
+    
+      <span>&lt;button</span>
+<input 
+   type="text"
+    id="answer-input" 
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="none"
+    spellcheck="false"
+
+  
+   <span>="add()"&gt;</span>
+      <br>
+
+  <span>Add Item</span>
+
+      <br>
+
+      <span>&lt;/button&gt;</span>
+      
+    </div>
+  </div>
+
+      <!--Check Button-->
+
+      <div 
+        class="check-container">
+
+        <button
+          id="check-button"
+          class="check-button disabled"
+          onclick="checkAnswer()">
+          CHECK
+          </button>
+       
+      </div>
+    </div>
+   <!-====================================
+        WRONG ANSWER SCREEN  
+     ========================================-->
+
+    <div class="results-screen"
+      id="wrong-screen">
+      <div class="result-title">
+        
+        Give it Another Try
+        
+      </div>
+      
+      <div class="result-message">
+        
+        Your Answer isn't quit right. 🤔
+        
+      </div>
+      
+      <button 
+        class="try-again"
+        onclick="tryAgain()">
+        
+        TRY AGAIN
+        
+      </button>
+    </div>
+<!-- =====================================================
+     COMMENTS SCREEN
+===================================================== -->
+
+<div
+  class="comments-screen"
+  id="comments-screen">
+
+
+  <!-- HEADER -->
+
+  <div class="comments-header">
+
+    <div class="drag-bar"></div>
+
+    <h2 id="comment-count">
+      12 COMMENTS
+    </h2>
+
+  </div>
+
+
+  <!-- SORT -->
+
+  <div class="sort">
+
+    Most Popular　⌄
+
+  </div>
+
+    <!-- ======================================
+          EXISTING COMMENT 1
+       ========================================= -->
+    
+    
+       <div  class="Comment existing">
+         
+       <div  class="comment-top">
+
+      <div class="Avatar">
+        A
+      </div>
+
+         <div class="comment-body">
+
+           <span class="comment-name">
+            Arya </span>
+        
+           <span class="comment-date">
+            9/10/23 
+           </span>
+          <div class="comment-text">(click)   
+         
+         
+         </div>
+       
+       </div>
+
+       </div>
+
+         <div class="vote-row">
+
+           <span 
+             class="vote existing-vote"
+             onclick="existingUpvote(this)">
+             ^
+             <span 
+              class="vote-count">
+               +26
+             </span>
+              </span>
+
+           <span class="replies">
+             0 REPLIES       REPLY
+           </span>
+           <span class="comment-menu">
+             :
+           </span>
+             </div>
+           </div>
+          <hr>
+    <!-- ======================================
+           EXISTING COMMENT 2
+      ========================================== -->   
+      <div class="comment existing">
+        
+        <div class="comment-top">
+          
+          <div class="Avatar1">
+            V 
+          </div>
+          
+           <div class="comment-body">
+             
+             <span class="comment-name">
+           Vladislav Dostov</span>
+
+             <span class="comment-date">
+               10/31/2023
+             </span>
+         <div class="comment-text">I'm wrote (onclick),,,Delphi in my heart abuse me to do this mistake two times in a row)
+         </div>
+           
+         </div>
+         
+       </div>
+
+        <div class="vote-row">
+          
+      
+        <span class="vote existing-vote">
+         ^
+       <span class="vote-count">
+         +13
+       </span>
+        </span>
+
+          <span class="replies">
+            0 REPLIES      REPLY
+          </span>
+
+          <span class="comment-menu">
+            :
+          </span>
+
+        </div>
+
+     </div>
+       <hr>
+    <!-- ========================================
+             EXISTING COMMENT 3
+         ======================================= -->
+       <div class="comment existing">
+         
+         <div class="comment-top">
+
+           <div class="Avatar">
+             M
+           </div>
+
+           <div class="comment-body">
+
+             <span class="comment-name">
+               Monika Pierzchala
+             </span>
+
+             <span class="comment-date">
+               10/11/2023
+             </span>
+         <div class="comment-text">
+           method="invoke_function()"<br>
+           {{take value of variable}}
+           [set_this_variable]="with_this_value"
+         
+
+           </div>
+         
+         </div>
+         
+       </div>
+
+       <div class="vote-row">
+
+         <span
+           class="vote existing-vote"
+           onclick="existingUpvote(this)">
+           ^
+           <span class="vote-count">
+             +8
+           </span>
+           </span>
+    
+         <span class="replies">
+           1 REPLIES    REPLY
+         </span>
+       </div>
+      </div>
+         <hr>
+    <!-- =========================================
+            EXISTING COMMENT 4
+        ======================================== -->
+       <div class="comment existing">
+         
+         <div class="comment-top">
+
+           <div class="Avatar">
+             A H
+           </div>
+
+           <div class="comment-body">
+             
+           
+         <span class="comment-name">
+           Ahmad Harris
+         </span>
+
+          <span class="comment-date">
+            11/17/2023
+          </span>
+         <div class="comment-text">
+           button(click)
+           </div>
+           
+           </div>
+         
+         </div>
+
+          <div class="vote-row">
+
+            <span class="vote existing-vote"
+                  onclick="existingUpvote(this)">
+              ^
+    
+            <span class="vote-count">
+              +5
+            </span>
+            </span>
+
+            <span class="replies">
+              0 REPLIES      REPLY
+            </span>
+            <span class="comment-menu">
+              :
+            </span>
+          </div>
+       </div>
+    
+         <hr>
+
+    <!-- ======================================
+         EXISTING COMMENT 5
+      ====================================== -->
+      <div class="comment existing">
+        
+        <div class="comment-top">
+
+          <div class="Avatar">
+            E
+          </div>
+        <div class="comment-body">
+
+          <span class="comment-name">
+        Edon Shala
+          </span>
+
+          <span class="comment-date">
+            10/20/2023
+          </span>
+          
+         <div class="comment-text">
+           3 in a row 🔥🔥🔥
+         </div>
+
+        </div>
+
+        </div>
+
+
+        <div class="vote-row">
+
+          <span 
+            class="vote existing-vote"
+            onclick="existingUpvote(this)">
+            ^ <span class="vote-count">
+              +3
+            </span>
+                
+            </span>
+
+              <span class="replies">
+                
+                0 REPLIES  REPLY
+              </span>
+
+               <span class="comment-menu">
+                 :
+                  </span>
+      
+        </div>
+
+       </div>
+         <hr>
+
+    <!-- ========================================
+          EXISTING COMMENT 6
+      ========================================= -->
+       <div class="comment existing">
+         
+         <div class="comment-top">
+
+           <div class="Avatar">
+             S
+           </div>
+
+           <div class="comment-body">
+             
+         <span class="comment-name">
+           Opeyemi sheriff Yusuf
+         </span>
+
+
+          <span class="comment-date">
+            10/16/2023
+          </span>
+         <div class="comment-text">
+           (click)
+         </div>
+
+           </div>
+
+           </div>
+
+         
+             <div class="vote-row">
+
+               <span 
+                 class="vote existing-vote"
+                       onclick="existingUpvote(this)">
+                 
+                 ^ <span class="vote-count">
+                   +3
+                 </span>
+                 
+                 </span>
+
+                    <span class="replies">
+                      0 REPLIES  REPLY
+                    </span>
+
+                     <span class="comment-menu">
+                       :
+                     </span>
+             </div>
+
+             </div>
+         <hr>
+      <!-- ======================================
+              EXISTING COMMENT 7
+        ===================================== -->
+         <div class="comment existing">
+
+           <div class="comment-top">
+
+             <div class=Avatar>
+               H
+             </div>
+           <div class="comment-body">
+         
+             <span class="comment-name">
+               Hernández Muñoz Victor Chabel
+             </span>
+
+             <span class="comment-date">
+               3/31/2024
+             </span>
+         <div class="comment-text">
+           "(click)"
+         </div>
+
+           </div>
+           
+           </div>
+         <div class="vote-row">
+
+           <span
+             class="vote existing-vote"
+             onclick="existingUpvote(this)">              
+             ^<span class="vote count">
+                 +1
+             </span>
+             </span>
+
+               <span class="replies">
+                 0 REPLIES     REPLY
+               </span>
+
+               <span class="comment-menu">
+                 :
+               </span>
+         </div>
+         </div>
+             
+         <hr>
+      <!-- =======================================
+             EXISTING COMMENT 8
+        ===================================== -->
+          <div class="comment existing">
+
+            <div class="comment-top">
+
+              <div class="Avatar">
+                O
+              </div>
+            <div class="comment-body">
+          
+              <span class="comment-name">
+                Otuokwu Israel
+              </span>
+
+              <span class="comment-date">
+                9/11/2023
+              </span>
+         <div class="comment-text">
+           Feels Good.I am looking forwad to Two way data binding
+         </div>
+
+            </div>
+
+            </div>
+
+            <div class="vote-row">
+
+              <span class="vote-existing-     vote"            onclick="existingUpvote(this)">
+                ^
+              
+                <span class="vote-count">
+                 +1 
+              </span>
+              </span>  
+
+              <span class="replies">
+                0 REPLIES    REPLY
+              </span>
+              <span class="comment-menu">
+                :
+              </span>
+            </div>
+          </div>
+             
+         <hr>
+       <!-- ========================================
+             EXISTING COMMENT 9
+        ========================================== -->
+          <div class="comment existing">
+
+            <div class="comment-top">
+
+              <div class="Avatar">
+                P
+              </div>
+            <div class="comment-body">
+
+              
+          <span class="comment-name">
+            Pirate piracy
+          </span>
+
+          <span class="comment-date">
+           8/21/2026 
+          </span>
+         <div class="comment-text">
+           Mine is autospacing😭😭😭💔
+         </div>
+
+            </div>
+  
+      
+           </div>
+
+            <div class="vote-row">
+
+              <span class="vote existing-vote"
+                onclick="existingUpvote(this)">^
+               <span class="vote-count">
+               0  
+               </span>
+              </span>
+
+              <span class="replies">
+                0 REPLIES   REPLY
+              </span>
+            </div>
+          
+          </div>
+             
+   
+          <hr>
+
+      <!-- ==================================
+             EXISTING COMMENT 10
+      ================================== -->   
+          <div class="comment existing">
+
+            <div class="comment-top">
+
+              <div class="Avatar">
+                B
+              </div>
+              
+            <div class="comment-body">
+              
+          
+              
+              <span class="comment-name">
+            BRIGHT 🇳🇬
+          </span>
+            <span class="comment-date">
+              12/24/2025
+            </span>
+        <div class="comment-text">
+          Nothing is working for me<br>
+           Both<br>
+           (click)And (onclick)<br>
+           I think there's an error
+        </div>
+            </div>
+
+          </div>
+
+        <div class="vote-row">
+
+          <span class="vote existing-vote"
+                onclick="existingUpvote(this)">^
+          <span class="vote-count">
+            0
+          </span>
+          </span>
+
+          <span class="replies">
+            0 REPLIES     REPLY
+          </span>
+         </div>    
+      </div>  
+         <hr>
+
+      <!-- =======================================
+             EXISTING COMMENT 11
+        ========================================  -->
+           <div class="comment existing">
+
+             <div class="comment-top">
+               
+             <div class="Avatar">
+               AG
+           </div>
+
+               <div class="comment-body">
+
+                 
+               <span class="comment-name">
+                 Ahmad Gad
+               </span>
+
+               <span class="comment-date">
+                 9/1/2025
+               </span>
+         <div class="comment-text">
+           (click)
+         </div>
+
+             </div>
+
+           </div>
+
+         <div class="vote-row">
+
+           <span class="vote-existing-vote"
+                  onclick="existingUpvote(this)">^
+             <span class="vote-count">
+               0
+             </span>
+           </span>
+
+           <span class="replies">
+             0 REPLIES     REPLY
+           </span>
+         </div>          </div>
+         <hr>
+<!--  =====================================
+             NEW COMMENT
+   ================================ -->
+  <div id="new-comments">   
+  </div>
+
+    <!-- PlUS BUTTON -->
+
+    <button 
+      class="add-comment"
+           onclick="openCommentForm()">
+      +
+    </button>
+             
+      </div>
+    
+  <!-- =====================================================
+     COMMENT FORM
+===================================================== -->
+
+<div
+  class="comment-form"
+  id="comment-form">
+
+
+  <div class="form-box">
+
+    <h3>
+
+      Comment as
+      <span id="posting-name"></span>
+
+    </h3>
+
+
+    <textarea
+      id="comment-input"
+      placeholder="Write your comment..."
+      spellcheck="true"></textarea>
+
+
+    <div class="form-buttons">
+
+      <button
+        class="cancel-btn"
+        onclick="closeCommentForm()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="post-btn"
+        onclick="postComment()">
+
+        Post
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+    <script>
+/*-- =========================================
+   USER NAME
+==========================================
+--*/
+let userName = "";
+
+  /*-- =================================
+       SHOW NAME INPUT
+    ===============================  
+    --*/
+function showNameInput () {
+     document
+       .getElementById("name-button") 
+      .style.display="none";
+
+  
+     document
+      .getElementById("name-form")
+      .style.display="flex";
+
+     document
+      .getElementById("name-input")
+      .focus();
+
+} 
+  
+/*     ================================
+       SUBMIT NAME
+  ================================ 
+  -*/
+   function submitName(){
+
+     const input=
+       document.getElementById("name-input");
+
+     const name=
+       input.value.trim();
+
+     if (name=== "") {
+       alert("please enter your name");
+    
+     return;
+       
+     }
+
+     userName=name;
+
+     document
+     .getElementById("name-screen")
+     .style.display="none";
+
+     document
+    .getElementById("display-board")
+     .style.display="block";
+ 
+   
+   }  
+   
+  /*- ======================================
+         ANSWER INPUT
+         =============≈================== --*/
+
+      const answerInput=
+        document.getElementById("answer-input");
+
+      const checkButton=
+        document.getElementById("check-button");
+
+
+/*-=======================
+THE INTENTIONAL RAGEBAIT
+=================*/
+
+
+    answerInput.addEventListener (
+      "input",
+     function() {
+
+       let value=
+         answerInput.value;
+
+
+       
+   if (value === "(click)") {
+    answerInput.value = "( click)";
+     
+   }
+   if(
+     answerInput.value.trim() ==="" 
+   )
+   {
+     checkButton.classList.add("disabled");
+   }
+     
+     else  {
+         checkButton.classList.remove("disabled");
+       }  
+     } 
+    );
+
+      /* ========================
+           CHECK ANSWER
+     ========================= */
+      function checkAnswer (){
+        
+       if ( 
+         answerInput.value.trim () === ""
+       ) {
+         
+            return; 
+         
+       }
+         
+        const answer =
+          answerInput.value.trim();
+         
+        if(answer=== "click") {
+
+          showSucess();
+
+          return;
+        }
+
+              document
+                 .getElementById("wrong-screen")
+                 .classList.add("show");
+      }
+        
+      /* ===============
+          TRY AGAIN
+      ============== */
+      function tryAgain() {
+        document
+          .getElementById("wrong-screen")
+          .classList.remove("show");
+
+
+        answerInput.focus();
+      }
+    /* =======================
+         OPEN COMMENTS
+         ================== */
+     function openComments() {
+       
+     
+      const comments=
+        document.getElementById("comments-screen");
+
+      
+       comments.classList.add("show");
+      
+
+      comments.scrollTop= 0;
+      }
+      
+    /* =====================================================
+   EXISTING COMMENTS
+   UPVOTE ONLY
+===================================================== */
+
+function existingUpvote(button) {
+
+  const count =
+    button.querySelector(".vote-count");
+
+
+  /*
+     If the user has already upvoted,
+     tapping again UNDOS their own vote.
+
+     If they haven't voted,
+     tapping adds +1.
+
+     There is NO downvote on existing comments.
+  */
+
+  if (
+    button.classList.contains("active")
+  ) {
+
+    button.classList.remove("active");
+
+
+    count.textContent =
+      Number(count.textContent) - 1;
+
+
+    return;
+
+  }
+
+
+  button.classList.add("active");
+
+
+  count.textContent =
+    Number(count.textContent) + 1;
+
+}
+
+
+/* =====================================================
+   OPEN COMMENT FORM
+===================================================== */
+
+function openCommentForm() {
+
+  document
+    .getElementById("posting-name")
+    .textContent = userName;
+
+
+  document
+    .getElementById("comment-form")
+    .classList.add("show");
+
+}
+
+
+/* =====================================================
+   CLOSE COMMENT FORM
+===================================================== */
+
+function closeCommentForm() {
+
+  document
+    .getElementById("comment-form")
+    .classList.remove("show");
+
+}
+
+
+/* =====================================================
+   POST COMMENT
+===================================================== */
+
+function postComment() {
+
+  const input =
+    document.getElementById("comment-input");
+
+
+  const text =
+    input.value.trim();
+
+
+  if (text === "") {
+
+    alert("Write something first 😭");
+
+    return;
+
+  }
+
+
+  const today =
+    new Date();
+
+
+  const date =
+    today.toLocaleDateString();
+
+
+  const firstLetter =
+      userName.charAt(0).toUpperCase();
+
+
+  const comment =
+    document.createElement("div");
+
+
+  comment.className =
+    "comment new-comment";
+
+
+  comment.innerHTML = `
+
+    <div class="comment-top">
+
+      <div class="avatar">
+        ${firstLetter}
+      </div>
+
+      <div class="comment-body">
+
+        <span class="comment-name">
+          ${escapeHTML(userName)}
+        </span>
+
+        <span class="comment-date">
+          ${date}
+        </span>
+
+        <div class="comment-text">
+          ${escapeHTML(text)}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="vote-row">
+
+      <span
+        class="vote"
+        onclick="newUpvote(this)">
+
+        ^
+
+        <span class="vote-count">
+          0
+        </span>
+
+      </span>
+
+
+      <span
+        class="vote downvote"
+        onclick="newDownvote(this)">
+
+        v
+
+      </span>
+
+
+      <span class="replies">
+
+        0 REPLIES　 REPLY
+
+      </span>
+
+    </div>
+
+  `;
+
+
+  document
+    .getElementById("new-comments")
+    .prepend(comment);
+
+
+  input.value = "";
+
+
+  closeCommentForm();
+
+}
+
+
+/* =====================================================
+   NEW COMMENT UPVOTE
+===================================================== */
+
+function newUpvote(button) {
+
+  const comment =
+    button.closest(".new-comment");
+   const upvote =
+    comment.querySelector(".vote");
+
+
+  const count =
+    upvote.querySelector(".vote-count");
+
+
+  /*
+     Tap DOWN again = undo DOWN.
+  */
+
+  if (
+    button.classList.contains("active")
+  ) {
+
+    button.classList.remove("active");
+
+    return;
+
+  }
+
+
+  /*
+     If UP was selected,
+     remove that UP first.
+  */
+
+  if (
+    upvote.classList.contains("active")
+  ) {
+
+    upvote.classList.remove("active");
+
+
+    count.textContent =
+      Number(count.textContent) - 1;
+
+  }
+
+
+  button.classList.add("active");
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+
+  div.textContent =
+    text;
+
+
+  return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   SWIPE DOWN = CLOSE COMMENTS
+===================================================== */
+
+const comments =
+  document.getElementById("comments-screen");
+
+
+let startY = 0;
+
+
+comments.addEventListener(
+  "touchstart",
+  function(event) {
+
+    startY =
+      event.touches[0].clientY;
+
+  }
+);
+
+
+comments.addEventListener(
+  "touchend",
+  function(event) {
+
+    const endY =
+      event.changedTouches[0].clientY;
+
+
+    const difference =
+      endY - startY;
+
+
+    if (difference > 80) {
+
+      comments.classList.remove("show");
+
+    }
+
+  }
+);
+
+/* =========================
+   CANCEL BUTTON
+========================= */
+
+function showCancel() {
+
+  alert(
+    "YOU CAN DO THIS! 💪\n\n" +
+    "Don't lose the progress.\n" +
+    "Have you checked the comments " +
+    "yet for a hint?"
+  );
+
+}
+</script>
+
+</body>
+
+</html> 
+    
